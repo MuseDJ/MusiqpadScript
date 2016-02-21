@@ -1,0 +1,7 @@
+#Gitignore File
+/ignore
+/hide
+*.psd
+*.zip
+*.tar
+*.7z
