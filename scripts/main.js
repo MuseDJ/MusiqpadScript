@@ -108,7 +108,7 @@ window.muse = {
                     );
                 } else if (arg1.toLowerCase() == "off") {
                     $(document).on("chatCommandMuse", function(event, arg1, arg2, arg3) {
-
+                        muse.fn.end();
                     });
                 }
             });
