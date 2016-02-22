@@ -77,7 +77,7 @@ var muse = {
             } else {
                 muse.fn.chat.warn("Shutting down.");
             }
-        }
+        },
         initCmds: function() {
             $(document).on("chatCommandMuse", function(event, arg1, arg2, arg3) {
                 if (arg1.toLowerCase() == "help" || arg1 == undefined) {
