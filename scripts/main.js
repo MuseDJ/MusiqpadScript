@@ -11,13 +11,13 @@ var muse = {
     fn: {
         logger: {
             log: function(msg, options) {
-                if (options.verbose)
+                if (options.verbose !== undefined)
                     if (muse.settings.verbose >= options.verbose)
                         console.log(muse.prefix, msg);
                 console.log(muse.prefix, msg);
             },
             error: function(msg, options) {
-                if (options.verbose)
+                if (options.verbose !== undefined)
                     if (muse.settings.verbose >= options.verbose)
                         console.error(muse.prefix, msg);
                 console.errer(muse.prefix, msg);
@@ -62,6 +62,22 @@ var muse = {
 
             muse.fn.initCmds();
         },
+        end: function(err) {
+            for (var i in API.DATA.EVENTS) {
+                API.off(API.DATA.EVENTS[i], function(err, data) {
+                    muse.fn.chat.warn("ENDING EVENT: " + i + "(" + err + ")");
+                });
+            }
+            
+            muse.fn.endCmds();
+
+            if (err) {
+                muse.fn.logger.error(err);
+                muse.fn.chat.error("ENDING: " + err);
+            } else {
+                muse.fn.chat.warn("Shutting down.");
+            }
+        }
         initCmds: function() {
             $(document).on("chatCommandMuse", function(event, arg1, arg2, arg3) {
                 if (arg1.toLowerCase() == "help" || arg1 == undefined) {
@@ -74,18 +90,13 @@ var muse = {
                     );
                 } else if (arg1.toLowerCase() == "off") {
                     $(document).on("chatCommandMuse", function(event, arg1, arg2, arg3) {
-                        if (arg1.toLowerCase() == "help" || arg1 == undefined) {
-                            API.chat.system(
-                                "<span>Muse Help Menu.</span>" +
-                                "<ul>" +
-                                "<li><b>/muse&nbsp;</b><b style=\"color: #fff;\">help</b>&nbsp;<i>view this help menu</i></li>" +
-                                "<li><b>/muse&nbsp;</b><b style=\"color: #fff;\">off</b>&nbsp;<i>Disable MuseScript</i></li>" +
-                                "</ul>"
-                            );
-                        }
+
                     });
                 }
             });
         },
+        endCmds: function() {
+            $(document).off("chatCommandMuse");
+        }
     },
 };
