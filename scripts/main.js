@@ -11,16 +11,32 @@ var muse = {
     fn: {
         logger: {
             log: function(msg, options) {
-                if (options.verbose !== undefined)
-                    if (muse.settings.verbose >= options.verbose)
-                        console.log(muse.prefix, msg);
+                if (options !== undefined)
+                    if (options.verbose !== undefined)
+                        if (muse.settings.verbose >= options.verbose)
+                            console.log(muse.prefix, msg);
                 console.log(muse.prefix, msg);
             },
             error: function(msg, options) {
-                if (options.verbose !== undefined)
-                    if (muse.settings.verbose >= options.verbose)
-                        console.error(muse.prefix, msg);
-                console.errer(muse.prefix, msg);
+                if (options !== undefined)
+                    if (options.verbose !== undefined)
+                        if (muse.settings.verbose >= options.verbose)
+                            console.error(muse.prefix, msg);
+                console.error(muse.prefix, msg);
+            },
+            warn: function(msg, options) {
+                if (options !== undefined)
+                    if (options.verbose !== undefined)
+                        if (muse.settings.verbose >= options.verbose)
+                            console.warn(muse.prefix, msg);
+                console.warn(muse.prefix, msg);
+            },
+            info: function(msg, options) {
+                if (options !== undefined)
+                    if (options.verbose !== undefined)
+                        if (muse.settings.verbose >= options.verbose)
+                            console.info(muse.prefix, msg);
+                console.info(muse.prefix, msg);
             }
         },
         chat: {
@@ -68,7 +84,7 @@ var muse = {
                     muse.fn.chat.warn("ENDING EVENT: " + i + "(" + err + ")");
                 });
             }
-            
+
             muse.fn.endCmds();
 
             if (err) {
