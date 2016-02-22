@@ -1,4 +1,4 @@
-var muse = {
+window.muse = {
     VERSION: "0.0.0",
     NAME: "MuseScript",
     AUTHOR: "MuseDJ",
@@ -93,6 +93,8 @@ var muse = {
             } else {
                 muse.fn.chat.warn("Shutting down.");
             }
+            
+            delete window.muse;
         },
         initCmds: function() {
             $(document).on("chatCommandMuse", function(event, arg1, arg2, arg3) {
