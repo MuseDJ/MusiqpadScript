@@ -57,7 +57,7 @@ window.muse = {
             muse.prefix = "[" + this.NAME + " " + this.VERSION + "]";
             muse.fn.logger.log("Started.");
 
-            API.on(API.DATA.EVENTS.DJ_QUEUE_CYCLE, function(event) {
+            API.on(API.DATA.EVENTS.ADVANCE, function(event) {
                 muse.fn.logger.log("Liking Current Song", {
                     verbose: 2
                 });
@@ -78,6 +78,19 @@ window.muse = {
 
             muse.fn.initCmds();
         },
+        getETA: function() {
+            var totalSong = 0,
+                avgSong = 1;
+            API.room.getHistory().forEach(function(o, i) {
+                totalSong += o.song.duration;
+            });
+            avgSong /= API.room.getHistory().length;
+            if (API.queue.getPosition(API.room.getUser().uid) == 1) {
+                return
+            } else if (API.queue.getDJ().uid == API.room.getUser().uid) {
+                return avgSong * API.queue.getPosition(API.room.getUser().uid);
+            }
+        },
         end: function(err) {
             for (var i in API.DATA.EVENTS) {
                 API.off(API.DATA.EVENTS[i], function(err, data) {
@@ -93,7 +106,7 @@ window.muse = {
             } else {
                 muse.fn.chat.warn("Shutting down.");
             }
-            
+
             delete window.muse;
         },
         initCmds: function() {
