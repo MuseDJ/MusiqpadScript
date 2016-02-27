@@ -53,9 +53,23 @@ window.muse = {
                 API.chat.log("<span class=\"muse-warn\">" + msg + "</span>", muse.NAME);
             },
         },
+		loadCSS: function(url, callback) {
+			$('head').append(
+				$('<link rel="stylesheet" type="text/css" />').attr('href', encodeURI(url))
+			);
+			callback(url, undefined);
+		},
         init: function() {
             muse.prefix = "[" + this.NAME + " " + this.VERSION + "]";
             muse.fn.logger.log("Started.");
+
+			muse.fn.loadCSS("https://rawgit.com/MuseDJ/MusiqpadScript/master/css/muse.min.css", function(url, err) {
+				if(err){
+					muse.fn.logger.warn("Failed to load CSS.");
+				}else{
+					muse.fn.logger.log("Loaded CSS for "+url+".");
+				}
+			});
 
             API.on(API.DATA.EVENTS.ADVANCE, function(event) {
                 muse.fn.logger.log("Liking Current Song", {
