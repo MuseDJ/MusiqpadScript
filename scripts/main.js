@@ -52,6 +52,9 @@ window.muse = {
             warn: function(msg, options) {
                 API.chat.log("<span class=\"muse-warn\">" + msg + "</span>", muse.NAME);
             },
+			success: function(msg, options) {
+                API.chat.log("<span class=\"muse-success\">" + msg + "</span>", muse.NAME);
+            },
         },
 		loadCSS: function(url, callback) {
 			$('head').append(
@@ -98,7 +101,7 @@ window.muse = {
             API.room.getHistory().forEach(function(o, i) {
                 totalSong += o.song.duration;
             });
-            avgSong /= API.room.getHistory().length;
+            avgSong = totalSong/API.room.getHistory().length;
             if (API.queue.getPosition(API.room.getUser().uid) == 1) {
                 return
             } else if (API.queue.getDJ().uid == API.room.getUser().uid) {
