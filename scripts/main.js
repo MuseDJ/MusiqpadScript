@@ -52,33 +52,38 @@ window.muse = {
             warn: function(msg, options) {
                 API.chat.log("<span class=\"muse-warn\">" + msg + "</span>", muse.NAME);
             },
-			success: function(msg, options) {
+            success: function(msg, options) {
                 API.chat.log("<span class=\"muse-success\">" + msg + "</span>", muse.NAME);
             },
         },
-		loadCSS: function(url, callback) {
-			$('head').append(
-				$('<link rel="stylesheet" type="text/css" />').attr('href', encodeURI(url))
-			);
-			callback(url, undefined);
-		},
+        loadCSS: function(url, callback) {
+            $('head').append(
+                $('<link rel="stylesheet" type="text/css" />').attr('href', encodeURI(url))
+            );
+            callback(url, undefined);
+        },
         init: function() {
-            muse.prefix = "[" + this.NAME + " " + this.VERSION + "]";
+            muse.prefix = "[" + muse.NAME + " " + muse.VERSION + "]";
             muse.fn.logger.log("Started.");
 
-			muse.fn.loadCSS("https://rawgit.com/MuseDJ/MusiqpadScript/master/css/muse.min.css", function(url, err) {
-				if(err){
-					muse.fn.logger.warn("Failed to load CSS.");
-				}else{
-					muse.fn.logger.log("Loaded CSS for "+url+".");
-				}
-			});
+            muse.fn.loadCSS("https://rawgit.com/MuseDJ/MusiqpadScript/master/css/muse.min.css", function(url, err) {
+                if (err) {
+                    muse.fn.logger.warn("Failed to load CSS.");
+                } else {
+                    muse.fn.logger.log("Loaded CSS for " + url + ".");
+                }
+            });
 
             API.on(API.DATA.EVENTS.ADVANCE, function(event) {
-                muse.fn.logger.log("Liking Current Song", {
-                    verbose: 2
+                muse.fn.logger.log("Song Update", {
+                    verbose: 1
                 });
-                $(".mdi.mdi-thumb-up").click()
+                if (muse.settings.autolike) {
+                    muse.fn.logger.log("Liking Current Song", {
+                        verbose: 2
+                    });
+                    $(".mdi.mdi-thumb-up").click()
+                }
             });
 
             API.on(API.DATA.EVENTS.CHAT_COMMAND, function(err, msg, cmd) {
@@ -101,7 +106,7 @@ window.muse = {
             API.room.getHistory().forEach(function(o, i) {
                 totalSong += o.song.duration;
             });
-            avgSong = totalSong/API.room.getHistory().length;
+            avgSong = totalSong / API.room.getHistory().length;
             if (API.queue.getPosition(API.room.getUser().uid) == 1) {
                 return
             } else if (API.queue.getDJ().uid == API.room.getUser().uid) {
