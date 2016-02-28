@@ -49,7 +49,7 @@ window.muse = {
                     msg: (opt.msg == undefined) ? "" : opt.msg,
                     style: (opt.style == undefined) ? "" : opt.style,
                     name: (opt.name == undefined) ? muse.prefix : opt.name,
-                    time: (opt.time == undefined) ? (API.util.timeConvert(Date.now()).hours + ":" + (API.util.timeConvert(Date.now()).minutes < 10) ? "0" + API.util.timeConvert(Date.now()).minutes : API.util.timeConvert(Date.now()).minutes) : opt.time
+                    time: (opt.time == undefined) ? muse.fn.utils.makeTime(new Date()); : opt.time
                 };
                 var raw = '<div class="cm room-' + options.type + ' ' + options.class + '"><span class="time">' + options.time + '</span><div class="mdi mdi-' + options.icon + ' msg" style="' + options.style + '"></div><div class="text"><span class="uname">' + options.name + '</span><span class="umsg">' + options.msg + '</span></div></div>';
                 console.log(raw);
@@ -73,6 +73,15 @@ window.muse = {
                 API.chat.log("<span class=\"muse-success\">" + msg + "</span>", muse.NAME);
             },
         },
+		utils: {
+			makeTime: function(dateObj) {
+	            var settings = JSON.parse(localStorage.settings);
+	            if (settings.roomSettings && settings.roomSettings.chatTimestampFormat == API.DATA.CHAT.TSFORMAT.HR12)
+	                return ((dateObj.getHours()) % 12 || 12) + ':' + ('0' + dateObj.getMinutes()).slice(-2);
+	            else
+	                return (dateObj.getHours() + ':' + ('0' + dateObj.getMinutes()).slice(-2));
+	        }
+		},
         loadCSS: function(url, callback) {
             $('head').append(
                 $('<link rel="stylesheet" type="text/css" />').attr('href', encodeURI(url))
@@ -116,6 +125,8 @@ window.muse = {
             });
 
             muse.fn.initCmds();
+
+			muse.fn.chat.raw({msg: "Has launched successfully",icon:"music-note",class:"muse-success"});
         },
         getETA: function() {
             var totalSong = 0,
