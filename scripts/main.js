@@ -49,7 +49,7 @@ window.muse = {
                     msg: (opt.msg == undefined) ? "" : opt.msg,
                     style: (opt.style == undefined) ? "" : opt.style,
                     name: (opt.name == undefined) ? muse.prefix : opt.name,
-                    time: (opt.time == undefined) ? muse.fn.utils.makeTime(new Date()); : opt.time
+                    time: (opt.time == undefined) ? muse.fn.utils.makeTime(new Date()) : opt.time
                 };
                 var raw = '<div class="cm room-' + options.type + ' ' + options.class + '"><span class="time">' + options.time + '</span><div class="mdi mdi-' + options.icon + ' msg" style="' + options.style + '"></div><div class="text"><span class="uname">' + options.name + '</span><span class="umsg">' + options.msg + '</span></div></div>';
                 console.log(raw);
