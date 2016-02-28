@@ -40,6 +40,23 @@ window.muse = {
             }
         },
         chat: {
+            raw: function(opt) {
+                console.log(opt);
+                var options = {
+                    type: (opt.type == undefined) ? "message" : opt.type,
+                    icon: (opt.icon == undefined) ? "send" : opt.icon,
+                    class: (opt.class == undefined) ? "" : opt.class,
+                    msg: (opt.msg == undefined) ? "" : opt.msg,
+                    style: (opt.style == undefined) ? "" : opt.style,
+                    name: (opt.name == undefined) ? muse.prefix : opt.name,
+                    time: (opt.time == undefined) ? (API.util.timeConvert(Date.now()).hours + ":" + (API.util.timeConvert(Date.now()).minutes < 10) ? "0" + API.util.timeConvert(Date.now()).minutes : API.util.timeConvert(Date.now()).minutes) : opt.time
+                };
+                var raw = '<div class="cm room-' + options.type + ' ' + options.class + '"><span class="time">' + options.time + '</span><div class="mdi mdi-' + options.icon + ' msg" style="' + options.style + '"></div><div class="text"><span class="uname">' + options.name + '</span><span class="umsg">' + options.msg + '</span></div></div>';
+                console.log(raw);
+                console.log($.parseHTML(raw));
+                $('#messages').append(raw);
+				$('#chat').scrollTop($('#chat')[0].scrollHeight);
+            },
             log: function(msg, options) {
                 API.chat.log("<span class=\"muse-log\">" + msg + "</span>", muse.NAME);
             },
