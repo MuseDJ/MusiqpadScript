@@ -135,9 +135,13 @@ window.muse = {
             }
         },
         loadCSS: function(url, callback) {
-            $('head').append(
-                $('<link rel="stylesheet" type="text/css" />').attr('href', encodeURI(url))
-            );
+			if ($('link[href*="muse"]').length == 0){
+				$('head').append(
+	                $('<link rel="stylesheet" type="text/css" />').attr('href', encodeURI(url))
+	            );
+			} else {
+				$('link[href*="muse"]').attr('href',"");
+			}
             callback(url, undefined);
         },
         init: function() {
