@@ -135,12 +135,12 @@ window.muse = {
             }
         },
         loadCSS: function(url, callback) {
-			if ($('link[href*="muse"]').length == 0){
+			if ($('link[href="'+encodeURI(url)+'"]').length == 0){
 				$('head').append(
 	                $('<link rel="stylesheet" type="text/css" />').attr('href', encodeURI(url))
 	            );
 			} else {
-				$('link[href*="muse"]').attr('href',"");
+				$('link[href*="muse"]').attr('href', encodeURI(url));
 			}
             callback(url, undefined);
         },
