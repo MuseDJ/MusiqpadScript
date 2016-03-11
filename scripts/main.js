@@ -8,6 +8,7 @@ window.muse = {
 		number: 0,
 		tick: undefined
 	},
+	konami: false,
 	fn: {
 		logger: {
 			log: function(msg, options) {
@@ -264,20 +265,22 @@ window.muse = {
 		},
 		getETA: function() {
 			var total = 0,
-				avgSong = 1;
+				avgSong = 1,
+				position = API.queue.getInfo().length;
+			if(muse.konami){
+				return muse.fn.utils.makeTimeFromMs(Math.random()*10000000);
+			}
 			API.room.getHistory().forEach(function(o, i) {
 				total += o.song.duration;
 			});
 			avgSong = total / API.room.getHistory().length;
-			if (API.queue.getPosition(API.room.getUser().uid) == 1) {
-				return
-			} else if (API.queue.getDJ().uid == API.room.getUser().uid) {
-				return Math.ceil(avgSong * API.queue.getPosition(API.room.getUser().uid) + +API.room.getTimeRemaining());
-			} else if (API.queue.getPosition(API.room.getUser().uid) == -1) {
-				return Math.ceil(avgSong * API.queue.getInfo().length + API.room.getTimeRemaining());
-			} else {
-				return Math.abs(Math.max())
+			if (API.queue.getPosition() > -1) {
+				position = API.queue.getPosition();
+				if (API.queue.getPosition(API.room.getUser().uid) == 0) {
+					return 0;
+				}
 			}
+			return Math.ceil(avgSong * position) + API.room.getTimeRemaining());
 		},
 		end: function(err) {
 			for (var i in API.DATA.EVENTS) {
