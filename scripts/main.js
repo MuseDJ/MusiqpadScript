@@ -299,7 +299,7 @@ window.muse = {
 					return 0;
 				}
 			}
-			return Math.ceil(avgSong * position) + API.room.getTimeRemaining());
+			return Math.ceil(avgSong * position) + API.room.getTimeRemaining();
 	},
 	end: function(err) {
 		for (var i in API.DATA.EVENTS) {
