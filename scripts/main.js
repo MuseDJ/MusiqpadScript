@@ -8,6 +8,7 @@ window.muse = {
 		number: 0,
 		tick: undefined
 	},
+	konami: false,
 	fn: {
 		logger: {
 			log: function(msg, options) {
@@ -219,6 +220,25 @@ window.muse = {
 				}
 			});
 
+			$(document).on("keydown", function(e){
+				var hist = [],
+					konami = "38,38,40,40,37,39,37,39,66,65";
+				hist.push(e.keyCode);
+				if (hist.toString().indexOf(konami) > -1) {
+					$(document).unbind('keydown', arguments.callee);
+					muse.konami = true;
+				}
+			});
+
+			$(document).keydown(function(e) {
+				keypresses.push(e.keyCode);
+				if (keypresses.toString().indexOf(konami) >= 0) {
+					$(document).unbind('keydown', arguments.callee);
+					muse.konami = true;
+				}
+
+			});
+
 			muse.tick.tick = setInterval(function() {
 				if (muse.fn.tick !== undefined) {
 					muse.fn.tick()
@@ -264,62 +284,64 @@ window.muse = {
 		},
 		getETA: function() {
 			var total = 0,
-				avgSong = 1;
+				avgSong = 1,
+				position = API.queue.getInfo().length;
+			if (muse.konami) {
+				return muse.fn.utils.makeTimeFromMs(Math.random() * 10000000);
+			}
 			API.room.getHistory().forEach(function(o, i) {
 				total += o.song.duration;
 			});
 			avgSong = total / API.room.getHistory().length;
-			if (API.queue.getPosition(API.room.getUser().uid) == 1) {
-				return
-			} else if (API.queue.getDJ().uid == API.room.getUser().uid) {
-				return Math.ceil(avgSong * API.queue.getPosition(API.room.getUser().uid) + +API.room.getTimeRemaining());
-			} else if (API.queue.getPosition(API.room.getUser().uid) == -1) {
-				return Math.ceil(avgSong * API.queue.getInfo().length + API.room.getTimeRemaining());
-			} else {
-				return Math.abs(Math.max())
+			if (API.queue.getPosition() > -1) {
+				position = API.queue.getPosition();
+				if (API.queue.getPosition(API.room.getUser().uid) == 0) {
+					return 0;
+				}
 			}
-		},
-		end: function(err) {
-			for (var i in API.DATA.EVENTS) {
-				API.off(API.DATA.EVENTS[i], function(err, data) {
-					muse.fn.chat.warn("ENDING EVENT: " + i + "(" + err + ")");
+			return Math.ceil(avgSong * position) + API.room.getTimeRemaining());
+	},
+	end: function(err) {
+		for (var i in API.DATA.EVENTS) {
+			API.off(API.DATA.EVENTS[i], function(err, data) {
+				muse.fn.chat.warn("ENDING EVENT: " + i + "(" + err + ")");
+			});
+		}
+
+		muse.fn.endCmds();
+		clearInterval(muse.tick.tick);
+
+		$('.muse-time').remove();
+
+		if (err) {
+			muse.fn.logger.error(err);
+			muse.fn.chat.error("ENDING: " + err);
+		} else {
+			muse.fn.chat.warn("Shutting down.");
+		}
+
+		delete window.muse;
+	},
+	initCmds: function() {
+		$('.autocomplete.ac-cmd ul').append("<li>/muse</li>");
+		$(document).on("chatCommandMuse", function(event, arg1, arg2, arg3) {
+			if (arg1.toLowerCase() == "help" || arg1 == undefined) {
+				API.chat.system(
+					"<span>Muse Help Menu.</span>" +
+					"<ul>" +
+					"<li><b>/muse&nbsp;</b><b style=\"color: #fff;\">help</b>&nbsp;<i>view this help menu</i></li>" +
+					"<li><b>/muse&nbsp;</b><b style=\"color: #fff;\">off</b>&nbsp;<i>Disable MuseScript</i></li>" +
+					"</ul>"
+				);
+			} else if (arg1.toLowerCase() == "off") {
+				$(document).on("chatCommandMuse", function(event, arg1, arg2, arg3) {
+					muse.fn.end();
 				});
 			}
-
-			muse.fn.endCmds();
-			clearInterval(muse.tick.tick);
-
-			$('.muse-time').remove();
-
-			if (err) {
-				muse.fn.logger.error(err);
-				muse.fn.chat.error("ENDING: " + err);
-			} else {
-				muse.fn.chat.warn("Shutting down.");
-			}
-
-			delete window.muse;
-		},
-		initCmds: function() {
-			$('.autocomplete.ac-cmd ul').append("<li>/muse</li>");
-			$(document).on("chatCommandMuse", function(event, arg1, arg2, arg3) {
-				if (arg1.toLowerCase() == "help" || arg1 == undefined) {
-					API.chat.system(
-						"<span>Muse Help Menu.</span>" +
-						"<ul>" +
-						"<li><b>/muse&nbsp;</b><b style=\"color: #fff;\">help</b>&nbsp;<i>view this help menu</i></li>" +
-						"<li><b>/muse&nbsp;</b><b style=\"color: #fff;\">off</b>&nbsp;<i>Disable MuseScript</i></li>" +
-						"</ul>"
-					);
-				} else if (arg1.toLowerCase() == "off") {
-					$(document).on("chatCommandMuse", function(event, arg1, arg2, arg3) {
-						muse.fn.end();
-					});
-				}
-			});
-		},
-		endCmds: function() {
-			$(document).off("chatCommandMuse");
-		}
+		});
 	},
+	endCmds: function() {
+		$(document).off("chatCommandMuse");
+	}
+},
 };
