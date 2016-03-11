@@ -1,10 +1,18 @@
-$.getScript("https://rawgit.com/MuseDJ/MusiqpadScript/master/scripts/main.js");
 var startTime = Date.now();
-var museLoader = setInterval(function() {
-    if (typeof API !== "undefined")
-        if (typeof muse !== "undefined"){
-			clearInterval(museLoader);
-            muse.fn.init();
-            muse.fn.logger.info("Initialized in " + Date.now() - startTime);
-		}
-}, 250);
+if (typeof muse !== "undefined") {
+    muse.fn.end();
+}
+
+$.getScript("https://rawgit.com/MuseDJ/MusiqpadScript/master/scripts/main.js");
+
+museLoader = function() {
+    if (typeof API !== "undefined" && typeof muse !== "undefined") {
+        muse.fn.init();
+        muse.fn.logger.info("Initialized in " + API.util.timeConvert(Date.now()).milisseconds, startTime);
+		delete museLoader;
+    } else {
+        setTimeout(museLoader, 250);
+    }
+};
+
+museLoader();
