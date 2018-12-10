@@ -3,7 +3,7 @@ if (typeof muse !== "undefined") {
     muse.fn.end();
 }
 
-$.getScript("https://rawgit.com/MuseDJ/MusiqpadScript/master/scripts/main.js");
+$.getScript("https://cdn.jsdelivr.net/gh/MuseDJ/MusiqpadScript@master/scripts/main.js");
 
 museLoader = function() {
     if (typeof API !== "undefined" && typeof muse !== "undefined") {

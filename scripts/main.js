@@ -212,7 +212,7 @@ window.muse = {
 			muse.prefix = "[" + muse.NAME + " " + muse.VERSION + "]";
 			muse.fn.logger.log("Started.");
 
-			muse.fn.loadCSS("https://rawgit.com/MuseDJ/MusiqpadScript/master/css/muse.min.css", function(url, err) {
+			muse.fn.loadCSS("https://cdn.jsdelivr.net/gh/MuseDJ/MusiqpadScript@master/css/muse.min.css", function(url, err) {
 				if (err) {
 					muse.fn.logger.warn("Failed to load CSS.");
 				} else {
